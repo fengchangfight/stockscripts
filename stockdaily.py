@@ -16,13 +16,22 @@ def normalizeDate(dt):
 
 todayStr = formatDate(normalizeDate(date.today()))
 
-token="****"
+token="*****"
 ts.set_token(token)
     
 
 pro = ts.pro_api()
 df = pro.daily_basic(ts_code='', trade_date=todayStr, fields='ts_code,trade_date,total_mv,volume_ratio,pe,pb,turnover_rate')
 
+name_map={'ts_code': '代码', 
+          'trade_date': '交易日期', 
+          'total_mv': '总市值',
+          'volume_ratio': '量比', 
+          'pe': '市盈率', 
+          'pb': '市净率', 
+          'turnover_rate': '换手率', 
+        }
 col_order=['ts_code','trade_date','total_mv','volume_ratio','pe','pb','turnover_rate']
+custom_header = [name_map[r] for r in col_order]
 #df.columns = ['代码','交易日期','总市值','量比','市盈率','市净率','换手率']
-df.to_excel("/tmp/stockbasic_output_"+todayStr+".xlsx", index=False, columns=col_order) 
+df.to_excel("/tmp/stockbasic_output_"+todayStr+".xlsx", index=False, columns=col_order, header=custom_header) 
