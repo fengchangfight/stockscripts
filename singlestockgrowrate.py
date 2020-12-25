@@ -24,7 +24,7 @@ def normalize2weekday(dt):
 
 def goBack1Year(dt):
     oneYearAgo = dt - datetime.timedelta(days=1*365)
-    print("one year ago: {0} of date : {1}".format(oneYearAgo, dt))
+    # print("one year ago: {0} of date : {1}".format(oneYearAgo, dt))
     return oneYearAgo
 
 
@@ -37,8 +37,9 @@ def get_price_of_date(ts_code, dt):
     dtstr = date2formatstring(dt)
     df = pro.daily(ts_code=ts_code, start_date=dtstr, end_date=dtstr)
     if(df.shape[0] < 1):
-        return -1
-    avg_price = (df.loc[0].open+df.loc[0].close)/2
+        avg_price = -1
+    else:
+        avg_price = (df.loc[0].open+df.loc[0].close)/2
     print("getting price of {0} at {1} at avg_price: {2}".format(
         ts_code, dt, avg_price))
     return avg_price
@@ -54,7 +55,7 @@ def gobackcheck(ts_code):
         # if(cnt != 0 and cnt % 100 == 0):
         #     print("waiting for 10 secs as reaching cnt {0}".format(cnt))
         #     time.sleep(20)
-        if(previous_price == None):
+        if(previous_price is None):
             previous_price = get_price_of_date(ts_code, dt)
             dt = normalize2weekday(goBack1Year(dt))
         else:
@@ -83,4 +84,4 @@ def load_all_ts_code_and_analyze():
 
 if __name__ == "__main__":
     # load_all_ts_code_and_analyze()
-    gobackcheck('600519.SH')
+    gobackcheck('300061.SZ')
