@@ -3,6 +3,8 @@ import datetime
 from datetime import date
 import pandas as pd
 
+# 本文件依赖stock_basic_info.py和stock_bak_daily.py的产出文件作为输入
+
 
 def formatDate(dt):
     format = "%Y%m%d"
@@ -45,7 +47,7 @@ def get_stock_bak_dict():
     result_dict = {}
     excel_data_df = pd.read_excel(stock_bak_info, sheet_name='Sheet1')
     df = pd.DataFrame(excel_data_df, columns=['代码',
-                                              '交易日', '内盘', '外盘', '开盘价', '收盘价', '最高价', '最低价', '总市值', '强弱度', '活跃度'])
+                                              '内盘', '外盘', '开盘价', '最高价', '最低价', '总市值', '强弱度', '活跃度'])
     for _, row in df.iterrows():
         code = row['代码']
         result_dict[code] = row
@@ -69,10 +71,15 @@ name_map = {'ts_code': '代码',
             'name': '名称',
             'close': '当日收盘价',
             'industry': '行业',
-            'selling': '内盘'
+            'selling': '内盘',
+            'open': '开盘价',
+            'low': '最低价',
+            'high': '最高价',
+            'strength': '强弱度',
+            'activity': '活跃度'
             }
 col_order = ['ts_code', 'name', 'industry', 'trade_date', 'total_mv',
-             'volume_ratio', 'pe', 'pe_ttm', 'pb', 'dv_ratio', 'total_share', 'turnover_rate', 'close', 'selling']
+             'volume_ratio', 'pe', 'pe_ttm', 'pb', 'dv_ratio', 'total_share', 'turnover_rate', 'close', 'selling', 'open', 'low', 'high', 'strength', 'activity']
 custom_header = [name_map[r] for r in col_order]
 basic_dict = get_code_map_from_basic_info()
 bak_dict = get_stock_bak_dict()
@@ -81,5 +88,10 @@ bak_dict = get_stock_bak_dict()
 df['name'] = df.apply(lambda row: basic_dict[row.ts_code]['名称'], axis=1)
 df['industry'] = df.apply(lambda row: basic_dict[row.ts_code]['行业'], axis=1)
 df['selling'] = df.apply(lambda row: bak_dict[row.ts_code]['内盘'], axis=1)
+df['open'] = df.apply(lambda row: bak_dict[row.ts_code]['开盘价'], axis=1)
+df['low'] = df.apply(lambda row: bak_dict[row.ts_code]['最低价'], axis=1)
+df['high'] = df.apply(lambda row: bak_dict[row.ts_code]['最高价'], axis=1)
+df['strength'] = df.apply(lambda row: bak_dict[row.ts_code]['强弱度'], axis=1)
+df['activity'] = df.apply(lambda row: bak_dict[row.ts_code]['活跃度'], axis=1)
 df.to_excel("/Users/xiefengchang/life/stockdaily_merged_output_"+date_str +
             ".xlsx", index=False, columns=col_order, header=custom_header)
