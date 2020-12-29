@@ -28,7 +28,7 @@ stock_bak_info = '/Users/xiefengchang/life/stockdaily_bak_output_'+todayStr+'.xl
 #     date.today() - datetime.timedelta(days=1)))
 
 date_str = todayStr
-token = "c0b191a58ac95478267a597abbcf656bec52aa9ec52afa3d1228bfbf"
+token = "***"
 ts.set_token(token)
 pro = ts.pro_api()
 
