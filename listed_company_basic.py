@@ -1,7 +1,10 @@
+# 股票基础信息，每日变动不大，但是碰到新公司上市等可能会有一些变更
+
 import tushare as ts
 import datetime
 from datetime import date
 import pandas as pd
+import sys
 
 
 def formatDate(dt):
@@ -20,6 +23,8 @@ def normalize_date2weekday(dt):
 
 
 todayStr = formatDate(normalize_date2weekday(date.today()))
+if(len(sys.argv) > 1 and sys.argv[1] != None):
+    todayStr = sys.argv[1]
 
 token = "***"
 ts.set_token(token)
