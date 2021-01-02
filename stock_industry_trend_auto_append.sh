@@ -7,4 +7,5 @@ do
     python /Users/xiefengchang/life/wealthmanagement/scripts/stock_basic_info.py $line
     python /Users/xiefengchang/life/wealthmanagement/scripts/stock_bak_daily.py $line
     python /Users/xiefengchang/life/wealthmanagement/scripts/stockdaily.py $line
+    python /Users/xiefengchang/life/wealthmanagement/scripts/industry_market_value.py $line
 done < "$trade_dates_file"
