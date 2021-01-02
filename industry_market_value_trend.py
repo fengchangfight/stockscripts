@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import datetime
 import matplotlib.dates as mdates
-
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
 # 解决中文显示问题
 plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
@@ -21,144 +22,161 @@ input_file = "/Users/xiefengchang/life/industry_market_value_stats.xlsx"
 
 
 def draw_line(key, list_of_tuple_in_order):
+    plt.title('行业市值走向')
+    plt.xlabel('日期')
+    plt.ylabel('市值')
+    list_of_tuple_in_order = sorted(list_of_tuple_in_order, key=lambda x: x[0])
     x, y = map(list, zip(*list_of_tuple_in_order))
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y%m%d'))
     plt.gca().xaxis.set_major_locator(mdates.DayLocator())
     plt.plot([datetime.datetime.strptime(str(dt), '%Y%m%d')
-              for dt in x], y, '--o', label=key)
+              for dt in x], y, '--', label=key)
     plt.gcf().autofmt_xdate()
 
     plt.gcf().axes[0].yaxis.get_major_formatter().set_scientific(False)
 
+    plt.legend()
+    plt.xticks(size='small', rotation=60, fontsize=3)
+    # plt.tight_layout()
+    # plt.show()
+    plt.savefig('./'+key+'.png', dpi=300)
+    plt.clf()
 
-industries_to_check = ['综合类',
-                       '装修装饰',
-                       # 专用机械
-                       # 种植业
-                       # 中成药
-                       # 证券
-                       # 造纸
-                       # 运输设备
-                       # 园区开发
-                       # 元器件
-                       #    '渔业',
-                       # 影视音像
-                       # 银行
-                       '医药商业',
-                       # 医疗保健
-                       # 新型电力
-                       # 小金属
-                       # 橡胶
-                       # 文教休闲
-                       # 铜
-                       # 通信设备
-                       # 铁路
-                       # 特种钢
-                       # 陶瓷
-                       # 塑料
-                       # 饲料
-                       # 水运
-                       # 水务
-                       # 水泥
-                       # 水力发电
-                       # 食品
-                       # 石油贸易
-                       # 石油开采
-                       # 石油加工
-                       # 生物制药
-                       # 商品城
-                       # 商贸代理
-                       # 软饮料
-                       # 软件服务
-                       # 乳制品
-                       # 日用化工
-                       # 染料涂料
-                       # 全国地产
-                       # 区域地产
-                       # 轻工机械
-                       # 铅锌
-                       # 汽车整车
-                       # 汽车配件
-                       # 汽车服务
-                       # 其他商业
-                       # 其他建材
-                       # 普钢
-                       # 啤酒
-                       # 批发业
-                       # 农用机械
-                       # 农业综合
-                       # 农药化肥
-                       # 摩托车
-                       # 煤炭开采
-                       # 铝
-                       # 旅游景点
-                       # 旅游服务
-                       # 路桥
-                       # 林业
-                       # 矿物制品
-                       # 空运
-                       # 酒店餐饮
-                       # 焦炭加工
-                       # 建筑工程
-                       # 家用电器
-                       # 家居用品
-                       # 机械基件
-                       # 机床制造
-                       # 机场
-                       # 火力发电
-                       # 黄金
-                       # 环境保护
-                       # 化学制药
-                       # 化纤
-                       # 化工原料
-                       # 化工机械
-                       # 互联网
-                       # 红黄酒
-                       # 航空
-                       # 广告包装
-                       # 供气供热
-                       # 公路
-                       # 公共交通
-                       # 工程机械
-                       # 港口
-                       # 钢加工
-                       # 服饰
-                       # 纺织机械
-                       # 纺织
-                       # 房产服务
-                       # 多元金融
-                       # 电信运营
-                       # 电器仪表
-                       # 电器连锁
-                       # 电气设备
-                       # 船舶
-                       # 出版业
-                       # 超市连锁
-                       # 仓储物流
-                       # 玻璃
-                       # 保险
-                       # 半导体
-                       # 百货
-                       # 白酒,
-                       #    'IT设备'
-                       ]
+
+industries_to_check = [
+    '白酒',
+    '种植业',
+    '医疗保健',
+    '新型电力',
+    '小金属',
+    '塑料',
+    '饲料',
+    '水运',
+    '食品',
+    '乳制品',
+    '啤酒',
+    '旅游服务',
+    '矿物制品',
+    '家用电器',
+    '火力发电',
+    '化学制药',
+    '化纤',
+    '红黄酒',
+    '航空',
+    '工程机械',
+    '电气设备',
+    '玻璃',
+
+
+    '综合类',
+    '装修装饰',
+    '专用机械',
+    '中成药',
+    '证券',
+    '造纸',
+    '元器件',
+    '渔业',
+    '文教休闲',
+    '铜',
+    '生物制药',
+    '商品城',
+    '商贸代理',
+    '软饮料',
+    '软件服务',
+    '日用化工',
+    '轻工机械',
+    '铅锌',
+    '汽车整车',
+    '汽车配件',
+    '其他建材',
+    '普钢',
+    '农用机械',
+    '农药化肥',
+    '摩托车',
+    '煤炭开采',
+    '铝',
+    '旅游景点',
+    '路桥',
+    '林业',
+    '焦炭加工',
+    '家居用品',
+    '机械基件',
+    '机床制造',
+    '黄金',
+    '化工原料',
+    '化工机械',
+    '供气供热',
+    '公路',
+    '港口',
+    '钢加工',
+    '房产服务',
+    '电器仪表',
+    '仓储物流',
+    '半导体',
+    'IT设备'
+
+
+    '运输设备',
+    '园区开发',
+    '影视音像',
+    '银行',
+    '医药商业',
+    '橡胶',
+    '通信设备',
+    '铁路',
+    '水务',
+    '水泥',
+    '水力发电',
+    '石油贸易',
+    '石油开采',
+    '石油加工',
+    '染料涂料',
+    '全国地产',
+    '区域地产',
+    '汽车服务',
+    '其他商业',
+    '批发业',
+    '农业综合',
+    '空运',
+    '酒店餐饮',
+    '建筑工程',
+    '机场',
+    '环境保护',
+    '互联网',
+    '广告包装',
+    '公共交通',
+    '服饰',
+    '纺织机械',
+    '纺织',
+    '多元金融',
+    '电信运营',
+    '电器连锁',
+    '船舶',
+    '出版业',
+    '超市连锁',
+    '保险',
+    '百货',
+    '特种钢',
+    '陶瓷',
+
+
+]
+
+ind = industries_to_check[0]
 
 if __name__ == "__main__":
     excel_data_df = pd.read_excel(input_file, sheet_name='Sheet1')
     df = pd.DataFrame(excel_data_df, columns=['日期', '行业', '总市值'])
     dict = {}
-    plt.title('行业市值走向')
-    plt.xlabel('日期')
-    plt.ylabel('市值')
+
     for index, row in df.iterrows():
         dt = row['日期']
         industry = row['行业']
+        if(industry not in industries_to_check):
+            continue
         market_value = row['总市值']
         dict[industry] = dict.get(industry, [])+[(dt, market_value)]
 
     for key in dict.keys():
         if key in industries_to_check:
             draw_line(key, dict[key])
-    plt.legend()
-
-    plt.show()
