@@ -9,6 +9,7 @@ register_matplotlib_converters()
 plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
 
+image_path_base="/Users/xiefengchang/life/stock_images"
 
 # Year = [1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
 # Unemployment_Rate = [9.8, 12, 8, 7.2, 6.9, 7, 6.5, 6.2, 5.5, 6.3]
@@ -21,8 +22,8 @@ plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显�
 input_file = "/Users/xiefengchang/life/industry_market_value_stats.xlsx"
 
 
-def draw_line(key, list_of_tuple_in_order):
-    _, ax = plt.subplots()
+def draw_line( key, list_of_tuple_in_order):
+    fig, ax = plt.subplots()
     plt.title(key+'行业市值走向')
     plt.xlabel('日期')
     plt.ylabel('市值')
@@ -47,8 +48,11 @@ def draw_line(key, list_of_tuple_in_order):
     # 做实验时uncomment以下这行
     # plt.show()
     plt.tight_layout()
-    plt.savefig('./'+key+'.png', dpi=300)
-    plt.clf()
+    print("保存 {0} 行业...".format(key))
+    plt.savefig(image_path_base+'/'+key+'.png', dpi=300)
+    plt.close(fig)
+
+    
 
 
 industries_to_check = [
