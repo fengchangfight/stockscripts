@@ -86,6 +86,7 @@ name_map = {'ts_code': '代码',
             'close': '当日收盘价',
             'industry': '行业',
             'selling': '内盘',
+            'buying': '外盘',
             'open': '开盘价',
             'low': '最低价',
             'high': '最高价',
@@ -93,7 +94,7 @@ name_map = {'ts_code': '代码',
             'activity': '活跃度'
             }
 col_order = ['ts_code', 'name', 'industry', 'trade_date', 'total_mv',
-             'volume_ratio', 'pe', 'pe_ttm', 'pb', 'dv_ratio', 'total_share', 'turnover_rate', 'close', 'selling', 'open', 'low', 'high', 'strength', 'activity']
+             'volume_ratio', 'pe', 'pe_ttm', 'pb', 'dv_ratio', 'total_share', 'turnover_rate', 'close', 'selling', 'buying', 'open', 'low', 'high', 'strength', 'activity']
 custom_header = [name_map[r] for r in col_order]
 basic_dict = get_code_map_from_basic_info()
 bak_dict = get_stock_bak_dict()
@@ -110,6 +111,8 @@ df['industry'] = df.apply(lambda row: row_property_extractor(
     basic_dict, row.ts_code, '行业'), axis=1)
 df['selling'] = df.apply(lambda row: row_property_extractor(
     bak_dict, row.ts_code, '内盘'), axis=1)
+df['buying'] = df.apply(lambda row: row_property_extractor(
+    bak_dict, row.ts_code, '外盘'), axis=1)
 df['open'] = df.apply(lambda row: row_property_extractor(
     bak_dict, row.ts_code, '开盘价'), axis=1)
 df['low'] = df.apply(lambda row: row_property_extractor(
