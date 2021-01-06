@@ -3,13 +3,13 @@ import numpy as np
 import pandas as pd
 import datetime
 import matplotlib.dates as mdates
+import os
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 # 解决中文显示问题
 plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
 plt.rcParams['axes.unicode_minus'] = False  # 解决保存图像是负号'-'显示为方块的问题
 
-image_path_base="/Users/xiefengchang/life/stock_images"
 
 # Year = [1920, 1930, 1940, 1950, 1960, 1970, 1980, 1990, 2000, 2010]
 # Unemployment_Rate = [9.8, 12, 8, 7.2, 6.9, 7, 6.5, 6.2, 5.5, 6.3]
@@ -22,37 +22,47 @@ image_path_base="/Users/xiefengchang/life/stock_images"
 input_file = "/Users/xiefengchang/life/industry_market_value_stats.xlsx"
 
 
-def draw_line( key, list_of_tuple_in_order):
+def date_parse(str, format):
+    return datetime.datetime.strptime(str, format)
+
+
+start_date_str = "20201201"
+start_date_obj = date_parse(start_date_str, '%Y%m%d')
+image_path_base = "/Users/xiefengchang/life/stock_images_"+start_date_str
+if not os.path.exists(image_path_base):
+    os.makedirs(image_path_base)
+
+
+def draw_line(key, list_of_tuple_in_order):
     fig, ax = plt.subplots()
     plt.title(key+'行业市值走向')
     plt.xlabel('日期')
     plt.ylabel('市值')
     list_of_tuple_in_order = sorted(list_of_tuple_in_order, key=lambda x: x[0])
     x, y = map(list, zip(*list_of_tuple_in_order))
-    #以下两行很重要，设置x轴的刻度间隔和显示格式
+    # 以下两行很重要，设置x轴的刻度间隔和显示格式
     plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
     plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
     # plt.plot([datetime.datetime.strptime(str(dt), '%Y%m%d')
     #           for dt in x], y, '--', label=key)
 
-    #绘图
-    ax.plot([datetime.datetime.strptime(str(dt), '%Y%m%d') for dt in x],y,label=key)
+    # 绘图
+    ax.plot([datetime.datetime.strptime(str(dt), '%Y%m%d')
+             for dt in x], y, label=key)
 
-    #y轴不要用科学计数法显示
+    # y轴不要用科学计数法显示
     plt.gcf().axes[0].yaxis.get_major_formatter().set_scientific(False)
 
-    #该行用于显示图表中线的名字
+    # 该行用于显示图表中线的名字
     plt.legend()
-    #设置x轴label的旋转角度和尺寸
-    plt.xticks(rotation=60,size=8)
+    # 设置x轴label的旋转角度和尺寸
+    plt.xticks(rotation=60, size=8)
     # 做实验时uncomment以下这行
     # plt.show()
     plt.tight_layout()
     print("保存 {0} 行业...".format(key))
     plt.savefig(image_path_base+'/'+key+'.png', dpi=300)
     plt.close(fig)
-
-    
 
 
 industries_to_check = [
@@ -174,8 +184,6 @@ industries_to_check = [
 
 ]
 
-ind = industries_to_check[0]
-
 if __name__ == "__main__":
     excel_data_df = pd.read_excel(input_file, sheet_name='Sheet1')
     df = pd.DataFrame(excel_data_df, columns=['日期', '行业', '总市值'])
@@ -184,6 +192,8 @@ if __name__ == "__main__":
     for index, row in df.iterrows():
         dt = row['日期']
         industry = row['行业']
+        if(date_parse(str(dt), '%Y%m%d') < start_date_obj):
+            continue
         if(industry not in industries_to_check):
             continue
         market_value = row['总市值']
